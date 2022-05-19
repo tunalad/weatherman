@@ -161,6 +161,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_below="@id/txt_details"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -183,6 +185,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_below="@id/ll_pressure"
+                        android:gravity="center"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -205,6 +208,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_below="@id/cl_humidity"
+                        android:gravity="center"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -227,6 +231,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_below="@id/ll_clouds"
+                        android:gravity="center"
                         android:orientation="horizontal">
 
                         <ImageView
