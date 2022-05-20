@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="sp_notification"
+        android:title="Notification" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="sp_metric"
+        android:title="Metric Values" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="sp_autoupdate"
+        android:title="Auto update" />
+</PreferenceScreen>

@@ -1,15 +1,20 @@
 package com.example.weatherman;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-
     SwipeRefreshLayout swipeRefreshLayout;
 
     String wttr_hourly_temp[], wttr_hourly_time[];
@@ -20,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        load_settings();
 
         rcv_hourly = findViewById(R.id.rcv_hourly);
 
@@ -42,5 +48,40 @@ public class MainActivity extends AppCompatActivity {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    /* LOAD SETTINGS */
+    private void load_settings(){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean is_metric = sp.getBoolean("sp_metric", true);
+        if (is_metric)
+            Toast.makeText(this, "Metric values enabled", Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(this, "Metric values disabled", Toast.LENGTH_SHORT).show();
+    }
+
+    /* MENU ITEMS */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_items, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.m_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        load_settings();
+        super.onResume();
     }
 }
