@@ -1,3 +1,33 @@
 <resources>
     <string name="app_name">Weatherman</string>
+
+    <string-array name="wttr_hourly_temp">
+        <item>11°</item>
+        <item>12°</item>
+        <item>13°</item>
+        <item>14°</item>
+        <item>15°</item>
+        <item>16°</item>
+        <item>17°</item>
+        <item>18°</item>
+        <item>19°</item>
+        <item>20°</item>
+        <item>21°</item>
+        <item>22°</item>
+    </string-array>
+
+    <string-array name="wttr_hourly_time">
+        <item>16:11</item>
+        <item>16:12</item>
+        <item>16:13</item>
+        <item>16:14</item>
+        <item>16:15</item>
+        <item>16:16</item>
+        <item>16:17</item>
+        <item>16:18</item>
+        <item>16:19</item>
+        <item>16:20</item>
+        <item>16:21</item>
+        <item>16:22</item>
+    </string-array>
 </resources>
