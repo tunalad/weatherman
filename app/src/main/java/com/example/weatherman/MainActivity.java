@@ -16,10 +16,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.material.navigation.NavigationView;
+
 public class MainActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
     ActionBarDrawerToggle drawerToggle;
     DrawerLayout drawerLayout;
+    NavigationView navigationView;
+    Menu menu_drawer;
 
     String wttr_hourly_temp[], wttr_hourly_time[];
 
@@ -44,6 +48,13 @@ public class MainActivity extends AppCompatActivity {
         /* HAMBURGRR MENU */
         drawerLayout = findViewById(R.id.drawerLayout);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+
+        navigationView = findViewById(R.id.navigationView);
+        menu_drawer = navigationView.getMenu();
+
+        for(int i = 1; i<=3; i++)
+            menu_drawer.add("Item" + i);
+            //menu.add(0, itemId, 0, title);
 
         /* SWIPE REFRESH */
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
