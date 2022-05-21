@@ -1,7 +1,9 @@
 package com.example.weatherman;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -16,6 +18,8 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
+    ActionBarDrawerToggle drawerToggle;
+    DrawerLayout drawerLayout;
 
     String wttr_hourly_temp[], wttr_hourly_time[];
 
@@ -37,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
         rcv_hourly.setAdapter(wttr_hourly);
         rcv_hourly.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
+        /* HAMBURGRR MENU */
+        drawerLayout = findViewById(R.id.drawerLayout);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
 
         /* SWIPE REFRESH */
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);

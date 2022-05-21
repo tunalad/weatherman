@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Weatherman</string>
+    <string name="close">Close</string>
+    <string name="open">Open</string>
 
     <string-array name="wttr_hourly_temp">
         <item>11°</item>
