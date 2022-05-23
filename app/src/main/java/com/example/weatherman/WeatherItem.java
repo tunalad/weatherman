@@ -9,13 +9,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+
 public class WeatherItem extends RecyclerView.Adapter<WeatherItem.ViewHolder> {
 
     Context c;
-    String data_time[];
-    String data_temp[];
+    ArrayList<String> data_time;
+    ArrayList<String> data_temp;
 
-    public WeatherItem(Context context, String wttr_time[], String wttr_temp[]){
+    public WeatherItem(Context context, ArrayList<String> wttr_time, ArrayList<String> wttr_temp){
         c = context;
         data_time = wttr_time;
         data_temp = wttr_temp;
@@ -31,13 +33,13 @@ public class WeatherItem extends RecyclerView.Adapter<WeatherItem.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.txt_wttr_time.setText(data_time[position]);
-        holder.txt_wttr_temp.setText(data_temp[position]);
+        holder.txt_wttr_time.setText(data_time.get(position));
+        holder.txt_wttr_temp.setText(data_temp.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return data_temp.length;
+        return data_temp.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

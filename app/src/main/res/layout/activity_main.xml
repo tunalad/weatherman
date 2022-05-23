@@ -19,6 +19,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="15sp">
+                <TextView
+                    android:id="@+id/place_key"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="invisible" />
                 <!-- CURRENT -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/crd_current"
@@ -38,7 +43,7 @@
                             android:layout_marginTop="25sp"
                             android:paddingStart="31sp"
                             android:text="--°"
-                            android:textSize="100sp"
+                            android:textSize="65sp"
                             android:textColor="@color/white"/>
                         <TextView
                             android:id="@+id/txt_minmax"
