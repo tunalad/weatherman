@@ -21,7 +21,7 @@ public class Add_place extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_place);
 
-        String api_key = "tGfoexE52HG7mcnyCrV697NeITDjvCGA";
+        String api_key = "Ou4LwGBcgCrqqUdKABOTULJRA2tIcmtC";
 
         DatabaseManager dbManager = new DatabaseManager(this);
         Button btn_add_place = findViewById(R.id.btn_add_place);
@@ -33,7 +33,7 @@ public class Add_place extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String place_name = et_placename.getText().toString();
-                if(dbManager.fetch_place_key(place_name) == null){
+                if(dbManager.fetch_place_key(place_name) == "PLACE DOESN'T EXIST"){
                     Python py = Python.getInstance();
                     PyObject wttr_api = py.getModule("wttr_api");
 

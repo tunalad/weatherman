@@ -70,9 +70,8 @@ public class MainActivity extends AppCompatActivity {
         try {dbManager.open();}
         catch (SQLDataException e) {e.printStackTrace();}
 
-        get_weather("Belgrade", true);
-
         nav_drawer();
+        //get_weather("Belgrade", true);
 
         //<editor-fold desc="HOURLY & DAILY CARDS">
         rcv_hourly = findViewById(R.id.rcv_hourly);
@@ -114,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         txt_wind_speed = findViewById(R.id.txt_speed);
         //</editor-fold>
 
-        String api_key = "OxXc2cydNZiy4sya8Ruz5d6pfnlVbG8U";
+        String api_key = "Ou4LwGBcgCrqqUdKABOTULJRA2tIcmtC";
 
         Python py = Python.getInstance();
         PyObject wttr_api = py.getModule("wttr_api");
@@ -192,27 +191,17 @@ public class MainActivity extends AppCompatActivity {
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
 
         menu_drawer = navigationView.getMenu();
-        for(int i = 1; i<=3; i++)
-            menu_drawer.add(0, 69+i, 0, "item "+i);
+        for(int i = 1; i <= dbManager.count_place(); i++)
+            menu_drawer.add(0, 70 + i, 0, dbManager.fetch_place_name(i));
         //menu.add(0, itemId, 0, title);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.btn_open_add:
-                        //Toast.makeText(MainActivity.this, "Open add menu", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(MainActivity.this, Add_place.class));
-                        break;
-                    case 70:
-                        Toast.makeText(MainActivity.this, "Item 1 moment?", Toast.LENGTH_SHORT).show(); break;
-                    case 71:
-                        Toast.makeText(MainActivity.this, "Item 2 moment?", Toast.LENGTH_SHORT).show(); break;
-                    case 72:
-                        Toast.makeText(MainActivity.this, "Item 3 moment?", Toast.LENGTH_SHORT).show(); break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + item.getItemId());
-                }
+                if (item.getItemId() == R.id.btn_open_add)
+                    startActivity(new Intent(MainActivity.this, Add_place.class));
+                else
+                    Toast.makeText(MainActivity.this, "Item " + item.getItemId() + " moment?", Toast.LENGTH_SHORT).show();
                 return false;
             }
         });

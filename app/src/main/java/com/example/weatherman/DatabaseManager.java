@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import androidx.appcompat.widget.ThemedSpinnerAdapter;
@@ -41,17 +42,38 @@ public class DatabaseManager {
     @SuppressLint("Range")
     public String fetch_place_key(String place_name){
         Cursor crs;
-        String query = "select place_key from " + DatabaseHelper.TABLE_PLACE + "" + " where " + DatabaseHelper.PLACE_NAME + " is '" + place_name + "'";
+        String query = "select " + DatabaseHelper.PLACE_KEY + " from " + DatabaseHelper.TABLE_PLACE  +
+                " where " + DatabaseHelper.PLACE_NAME + " is '" + place_name + "' collate nocase";
         crs = db.rawQuery(query, null);
 
-        if (crs != null)
-            crs.moveToFirst();
+        crs.moveToFirst();
+
+        if (crs.getCount() <= 0)
+            return "PLACE DOESN'T EXIST";
         else
-            return null;
-        Log.d("FETCH_PLACE: ", "KEY: " + crs.getString(crs.getColumnIndex(DatabaseHelper.PLACE_KEY)));
-        return crs.getString(crs.getColumnIndex(DatabaseHelper.PLACE_KEY));
+            return crs.getString(crs.getColumnIndex(DatabaseHelper.PLACE_KEY));
     }
 
+    @SuppressLint("Range")
+    public String fetch_place_name(int place_id){
+        Cursor crs;
+        String query = "select " + DatabaseHelper.PLACE_NAME + " from " +
+                DatabaseHelper.TABLE_PLACE + " where " + DatabaseHelper.PLACE_ID + " is " + place_id;
+
+        crs = db.rawQuery(query, null);
+        crs.moveToFirst();
+
+        return crs.getString(crs.getColumnIndex(DatabaseHelper.PLACE_NAME));
+    }
+
+    @SuppressLint("Range")
+    public int count_place(){
+        Cursor crs;
+        String query = "select count(*) from " + DatabaseHelper.TABLE_PLACE;
+        crs = db.rawQuery(query, null);
+        crs.moveToFirst();
+        return crs.getInt(0);
+    }
 
     public Cursor fetch(){
         String[] columns = new String[] {DatabaseHelper.PLACE_ID, DatabaseHelper.PLACE_NAME, DatabaseHelper.PLACE_KEY};
