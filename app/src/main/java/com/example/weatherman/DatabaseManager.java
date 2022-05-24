@@ -1,9 +1,11 @@
 package com.example.weatherman;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import androidx.appcompat.widget.ThemedSpinnerAdapter;
 
@@ -35,6 +37,21 @@ public class DatabaseManager {
         cv.put(DatabaseHelper.PLACE_KEY, place_key);
         db.insert(DatabaseHelper.TABLE_PLACE, null, cv);
     }
+
+    @SuppressLint("Range")
+    public String fetch_place_key(String place_name){
+        Cursor crs;
+        String query = "select place_key from " + DatabaseHelper.TABLE_PLACE + "" + " where " + DatabaseHelper.PLACE_NAME + " is '" + place_name + "'";
+        crs = db.rawQuery(query, null);
+
+        if (crs != null)
+            crs.moveToFirst();
+        else
+            return null;
+        Log.d("FETCH_PLACE: ", "KEY: " + crs.getString(crs.getColumnIndex(DatabaseHelper.PLACE_KEY)));
+        return crs.getString(crs.getColumnIndex(DatabaseHelper.PLACE_KEY));
+    }
+
 
     public Cursor fetch(){
         String[] columns = new String[] {DatabaseHelper.PLACE_ID, DatabaseHelper.PLACE_NAME, DatabaseHelper.PLACE_KEY};

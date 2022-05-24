@@ -35,13 +35,15 @@ public class MainActivity extends AppCompatActivity {
     NavigationView navigationView;
     Menu menu_drawer;
 
+    RecyclerView rcv_hourly;
+    RecyclerView rcv_daily;
+
+    //<editor-fold desc="WEATHER DATA ARRAYS">
     ArrayList<String> wttr_hourly_temp = new ArrayList<>();
     ArrayList<String> wttr_hourly_time = new ArrayList<>();
     ArrayList<String> wttr_daily_temp = new ArrayList<>();
     ArrayList<String> wttr_daily_time = new ArrayList<>();
-
-    RecyclerView rcv_hourly;
-    RecyclerView rcv_daily;
+    //</editor-fold>
 
     //<editor-fold desc="TEXTVIEW DECLARATIONS">
     TextView txt_updated ;
@@ -64,10 +66,11 @@ public class MainActivity extends AppCompatActivity {
         load_settings();
 
         dbManager = new DatabaseManager(this);
+
         try {dbManager.open();}
         catch (SQLDataException e) {e.printStackTrace();}
 
-        //get_weather("Belgrade", true);
+        get_weather("Belgrade", true);
 
         nav_drawer();
 
@@ -111,14 +114,13 @@ public class MainActivity extends AppCompatActivity {
         txt_wind_speed = findViewById(R.id.txt_speed);
         //</editor-fold>
 
-        String api_key = "d5lAZusQcJOvhpkJMlSW0j6zYYJ9hFcX";
+        String api_key = "OxXc2cydNZiy4sya8Ruz5d6pfnlVbG8U";
 
         Python py = Python.getInstance();
         PyObject wttr_api = py.getModule("wttr_api");
 
         // GET PLACE KEY
-        PyObject place_key = wttr_api.callAttr("get_key", api_key, place_name);
-        dbManager.insert(place_name, place_key.toString());
+        String place_key = dbManager.fetch_place_key(place_name);
 
         //<editor-fold desc="CURRENT WEATHER">
         PyObject current_data = (wttr_api.callAttr("current", api_key, place_key, metric)).callAttr("response");
@@ -199,7 +201,9 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.btn_open_add:
-                        Toast.makeText(MainActivity.this, "Open add menu", Toast.LENGTH_SHORT).show(); break;
+                        //Toast.makeText(MainActivity.this, "Open add menu", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(MainActivity.this, Add_place.class));
+                        break;
                     case 70:
                         Toast.makeText(MainActivity.this, "Item 1 moment?", Toast.LENGTH_SHORT).show(); break;
                     case 71:
