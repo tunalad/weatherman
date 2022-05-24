@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
 import com.google.android.material.navigation.NavigationView;
 
+import java.sql.SQLDataException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -54,13 +56,20 @@ public class MainActivity extends AppCompatActivity {
     TextView txt_wind_speed;
     //</editor-fold>
 
+    DatabaseManager dbManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         load_settings();
 
-        get_weather("Belgrade", true);
+        dbManager = new DatabaseManager(this);
+        try {dbManager.open();}
+        catch (SQLDataException e) {e.printStackTrace();}
+
+        //get_weather("Belgrade", true);
+
+        nav_drawer();
 
         //<editor-fold desc="HOURLY & DAILY CARDS">
         rcv_hourly = findViewById(R.id.rcv_hourly);
@@ -72,18 +81,6 @@ public class MainActivity extends AppCompatActivity {
         WeatherItem wttr_daily= new WeatherItem(this, wttr_daily_time, wttr_daily_temp);
         rcv_daily.setAdapter(wttr_daily);
         rcv_daily.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        //</editor-fold>
-
-        //<editor-fold desc="CREATING & POPULATING DRAWER MENU">
-        drawerLayout = findViewById(R.id.drawerLayout);
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
-
-        navigationView = findViewById(R.id.navigationView);
-        menu_drawer = navigationView.getMenu();
-
-        for(int i = 1; i<=3; i++)
-            menu_drawer.add("Item" + i);
-            //menu.add(0, itemId, 0, title);
         //</editor-fold>
 
         //<editor-fold desc="SWIPE REFRESH">
@@ -101,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
     }
     /* GET API DATA */
     private void get_weather(String place_name, boolean metric){
+        //<editor-fold desc="txt IDs">
         txt_updated = findViewById(R.id.txt_updated);
         txt_current = findViewById(R.id.txt_temperature);
         txt_maxmin = findViewById(R.id.txt_minmax);
@@ -111,14 +109,16 @@ public class MainActivity extends AppCompatActivity {
         txt_visibility = findViewById(R.id.txt_visibility);
         txt_wind_direction = findViewById(R.id.txt_direction);
         txt_wind_speed = findViewById(R.id.txt_speed);
+        //</editor-fold>
 
-        String api_key = "k9jxcBEgnbKpYqVafQtSrZzPphM8gXEA";
+        String api_key = "d5lAZusQcJOvhpkJMlSW0j6zYYJ9hFcX";
 
         Python py = Python.getInstance();
         PyObject wttr_api = py.getModule("wttr_api");
 
         // GET PLACE KEY
         PyObject place_key = wttr_api.callAttr("get_key", api_key, place_name);
+        dbManager.insert(place_name, place_key.toString());
 
         //<editor-fold desc="CURRENT WEATHER">
         PyObject current_data = (wttr_api.callAttr("current", api_key, place_key, metric)).callAttr("response");
@@ -183,6 +183,37 @@ public class MainActivity extends AppCompatActivity {
         txt_updated.setText("Last updated at: " + time_hrs);
     }
 
+    /* NAVIGATION DRAWER MENU */
+    private void nav_drawer(){
+        navigationView = findViewById(R.id.navigationView);
+        drawerLayout = findViewById(R.id.drawerLayout);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+
+        menu_drawer = navigationView.getMenu();
+        for(int i = 1; i<=3; i++)
+            menu_drawer.add(0, 69+i, 0, "item "+i);
+        //menu.add(0, itemId, 0, title);
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.btn_open_add:
+                        Toast.makeText(MainActivity.this, "Open add menu", Toast.LENGTH_SHORT).show(); break;
+                    case 70:
+                        Toast.makeText(MainActivity.this, "Item 1 moment?", Toast.LENGTH_SHORT).show(); break;
+                    case 71:
+                        Toast.makeText(MainActivity.this, "Item 2 moment?", Toast.LENGTH_SHORT).show(); break;
+                    case 72:
+                        Toast.makeText(MainActivity.this, "Item 3 moment?", Toast.LENGTH_SHORT).show(); break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + item.getItemId());
+                }
+                return false;
+            }
+        });
+    }
+
     /* LOAD SETTINGS */
     private void load_settings(){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -197,18 +228,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_items, menu);
+        //getMenuInflater().inflate(R.menu.menu_nav_drawer, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
         switch (item.getItemId()){
             case R.id.m_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
