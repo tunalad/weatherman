@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +27,14 @@ import com.google.android.material.navigation.NavigationView;
 import java.sql.SQLDataException;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+// Todo (--) : Delete place items (on item held or in add menu)
+// Todo (ez) : Check if imputed place is valid (python)
+// Todo (ez) : Get place via GPS?
+// Todo (ez) : Make warning box work actually (python)
+// Todo (--) : Make settings do something (convert metric shit, default place on open)
+// Todo (ez) : Save key globally (file or a new class)
+// Todo (ez) : Icons for gui ofc
 
 public class MainActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
@@ -200,8 +209,19 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.btn_open_add)
                     startActivity(new Intent(MainActivity.this, Add_place.class));
-                else
-                    Toast.makeText(MainActivity.this, "Item " + item.getItemId() + " moment?", Toast.LENGTH_SHORT).show();
+                else{
+                    get_weather(dbManager.fetch_place_name(item.getItemId() - 70), true);
+                    drawerLayout.closeDrawers();
+                    //Toast.makeText(MainActivity.this, "Item " + item.getItemId() + " moment?", Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
+
+        navigationView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(MainActivity.this, "Held? " + view.toString(), Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
