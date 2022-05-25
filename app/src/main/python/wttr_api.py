@@ -1,6 +1,8 @@
 import requests
 import json
 
+API_KEY = "Ou4LwGBcgCrqqUdKABOTULJRA2tIcmtC"
+
 def get_key(api_key, place):
     ''' returns a key of the place '''
     place_data = requests.get(

@@ -33,7 +33,6 @@ import java.util.Calendar;
 // Todo (ez) : Get place via GPS?
 // Todo (ez) : Make warning box work actually (python)
 // Todo (--) : Make settings do something (convert metric shit, default place on open)
-// Todo (ez) : Save key globally (file or a new class)
 // Todo (ez) : Icons for gui ofc
 
 public class MainActivity extends AppCompatActivity {
@@ -122,10 +121,11 @@ public class MainActivity extends AppCompatActivity {
         txt_wind_speed = findViewById(R.id.txt_speed);
         //</editor-fold>
 
-        String api_key = "Ou4LwGBcgCrqqUdKABOTULJRA2tIcmtC";
 
         Python py = Python.getInstance();
         PyObject wttr_api = py.getModule("wttr_api");
+        String api_key = wttr_api.get("API_KEY").toString();
+
 
         // GET PLACE KEY
         String place_key = dbManager.fetch_place_key(place_name);

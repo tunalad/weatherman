@@ -21,7 +21,7 @@ public class Add_place extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_place);
 
-        String api_key = "Ou4LwGBcgCrqqUdKABOTULJRA2tIcmtC";
+        String api_key = Python.getInstance().getModule("wttr_api").get("API_KEY").toString();
 
         DatabaseManager dbManager = new DatabaseManager(this);
         Button btn_add_place = findViewById(R.id.btn_add_place);
