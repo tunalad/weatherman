@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 // Todo (--) : Delete place items (on item held or in add menu)
-// Todo (ez) : Icons for weather
 // Todo (ez) : Place management (order & default id)
 // Todo (  ) : Make compass rotate depending on the dir given
 // Todo (ez) : Change daily weather time format
@@ -100,17 +99,6 @@ public class MainActivity extends AppCompatActivity {
         //get_weather("Belgrade"); // TODO: SET DEFAULT PLACE VALUE
 
 
-        //<editor-fold desc="HOURLY & DAILY CARDS">
-        rcv_hourly = findViewById(R.id.rcv_hourly);
-        WeatherItem wttr_hourly = new WeatherItem(this, wttr_hourly_time, wttr_hourly_temp, wttr_hourly_icons);
-        rcv_hourly.setAdapter(wttr_hourly);
-        rcv_hourly.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-
-        rcv_daily= findViewById(R.id.rcv_daily);
-        WeatherItem wttr_daily= new WeatherItem(this, wttr_daily_time, wttr_daily_temp, wttr_daily_icons);
-        rcv_daily.setAdapter(wttr_daily);
-        rcv_daily.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        //</editor-fold>
 
         //<editor-fold desc="SWIPE REFRESH">
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
@@ -171,6 +159,11 @@ public class MainActivity extends AppCompatActivity {
             wttr_hourly_time.add(hrs_time.toString());
             wttr_hourly_icons.add(hrs_icon.toInt());
         }
+
+        rcv_hourly = findViewById(R.id.rcv_hourly);
+        WeatherItem wttr_hourly = new WeatherItem(this, wttr_hourly_time, wttr_hourly_temp, wttr_hourly_icons);
+        rcv_hourly.setAdapter(wttr_hourly);
+        rcv_hourly.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         //</editor-fold>
 
         //<editor-fold desc="DAILY WEATHER">
@@ -192,6 +185,11 @@ public class MainActivity extends AppCompatActivity {
             wttr_daily_time.add(day_date.toString());
             wttr_daily_icons.add(day_icon.toInt());
         }
+
+        rcv_daily= findViewById(R.id.rcv_daily);
+        WeatherItem wttr_daily= new WeatherItem(this, wttr_daily_time, wttr_daily_temp, wttr_daily_icons);
+        rcv_daily.setAdapter(wttr_daily);
+        rcv_daily.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         //</editor-fold>
 
         //<editor-fold desc="CURRENT WEATHER DETAILS">
