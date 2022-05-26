@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
         txt_placename = findViewById(R.id.txt_placename);
         //</editor-fold>
 
+        rcv_daily= findViewById(R.id.rcv_daily);
+        rcv_hourly = findViewById(R.id.rcv_hourly);
         load_settings();
 
         dbManager = new DatabaseManager(this);
@@ -160,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
             wttr_hourly_icons.add(hrs_icon.toInt());
         }
 
-        rcv_hourly = findViewById(R.id.rcv_hourly);
         WeatherItem wttr_hourly = new WeatherItem(this, wttr_hourly_time, wttr_hourly_temp, wttr_hourly_icons);
         rcv_hourly.setAdapter(wttr_hourly);
         rcv_hourly.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -186,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
             wttr_daily_icons.add(day_icon.toInt());
         }
 
-        rcv_daily= findViewById(R.id.rcv_daily);
         WeatherItem wttr_daily= new WeatherItem(this, wttr_daily_time, wttr_daily_temp, wttr_daily_icons);
         rcv_daily.setAdapter(wttr_daily);
         rcv_daily.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
