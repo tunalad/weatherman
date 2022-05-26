@@ -1,7 +1,7 @@
 import requests
 import json
 
-API_KEY = "fXfHaBGpHIWE1EMxsqGcb7eilEGjjyJx"
+API_KEY = "iASbalAaVuTCerbDOvWWT6GgAplU8ECk"
 
 def get_key(api_key, place):
     ''' returns a key of the place '''
@@ -54,10 +54,12 @@ def crt_text(item_current): return item_current.json()[0]["WeatherText"]
 
 def hrs_temp(item_hourly, i): return item_hourly.json()[i]["Temperature"]["Value"]
 def hrs_time(item_hourly, i): return str(item_hourly.json()[i]["DateTime"])[11:-9]
+def hrs_icon(item_hourly, i): return item_hourly.json()[int(i)]["WeatherIcon"]
 
 def day_date(item_daily, i): return str(item_daily.json()["DailyForecasts"][i]["Date"])[:-15]
 def day_max (item_daily, i): return item_daily.json()["DailyForecasts"][i]["Temperature"]["Maximum"]["Value"]
 def day_min (item_daily, i): return item_daily.json()["DailyForecasts"][i]["Temperature"]["Minimum"]["Value"]
+def day_icon (item_daily, i): return item_daily.json()["DailyForecasts"][i]["Day"]["Icon"]
 
 def det_pressure(item_current): return item_current.json()[0]["Pressure"]["Metric"]["Value"]
 def det_humidity(item_current): return item_current.json()[0]["RelativeHumidity"]

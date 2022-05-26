@@ -30,16 +30,10 @@ import java.util.Calendar;
 
 // Todo (--) : Delete place items (on item held or in add menu)
 // Todo (ez) : Check if imputed place is valid (python)
-// Todo (ez) : Get place via GPS?
-// Todo (ez) : Icons for gui ofc
+// Todo (ez) : Icons for weather
 // Todo (ez) : Place management (order & default id)
+// Todo (  ) : Make compass rotate depending on the dir given
 
-
-// Todo (DONE) : Make settings do something (convert metric shit, default place on open)
-// Todo (DONE) : Change add icon text & style
-// Todo (DONE) : Add city name textview
-
-// Todo (NOT POSSIBLE) : Make alert box work actually
 public class MainActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
 
@@ -54,8 +48,10 @@ public class MainActivity extends AppCompatActivity {
     //<editor-fold desc="WEATHER DATA ARRAYS">
     ArrayList<String> wttr_hourly_temp = new ArrayList<>();
     ArrayList<String> wttr_hourly_time = new ArrayList<>();
+    ArrayList<Integer> wttr_hourly_icons = new ArrayList<>();
     ArrayList<String> wttr_daily_temp = new ArrayList<>();
     ArrayList<String> wttr_daily_time = new ArrayList<>();
+    ArrayList<Integer> wttr_daily_icons = new ArrayList<>();
     //</editor-fold>
 
     //<editor-fold desc="TEXTVIEW DECLARATIONS">
@@ -101,17 +97,17 @@ public class MainActivity extends AppCompatActivity {
         catch (SQLDataException e) {e.printStackTrace();}
 
         nav_drawer();
-        //get_weather("Belgrade", true); // TODO: SET DEFAULT PLACE VALUE
+        get_weather("Belgrade"); // TODO: SET DEFAULT PLACE VALUE
 
 
         //<editor-fold desc="HOURLY & DAILY CARDS">
         rcv_hourly = findViewById(R.id.rcv_hourly);
-        WeatherItem wttr_hourly = new WeatherItem(this, wttr_hourly_time, wttr_hourly_temp);
+        WeatherItem wttr_hourly = new WeatherItem(this, wttr_hourly_time, wttr_hourly_temp, wttr_hourly_icons);
         rcv_hourly.setAdapter(wttr_hourly);
         rcv_hourly.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         rcv_daily= findViewById(R.id.rcv_daily);
-        WeatherItem wttr_daily= new WeatherItem(this, wttr_daily_time, wttr_daily_temp);
+        WeatherItem wttr_daily= new WeatherItem(this, wttr_daily_time, wttr_daily_temp, wttr_daily_icons);
         rcv_daily.setAdapter(wttr_daily);
         rcv_daily.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         //</editor-fold>
@@ -149,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
         PyObject crt_text = wttr_api.callAttr("crt_text", current_data);
 
         txt_current.setText(crt_temp.toString() + "°");
-        txt_maxmin.setText(crt_max.toString() + "/" + crt_min.toString());
+        txt_maxmin.setText(crt_max.toString() + "°/" + crt_min.toString() + "°");
         txt_status.setText(crt_text.toString());
 
         if(!metric){
@@ -161,35 +157,40 @@ public class MainActivity extends AppCompatActivity {
 
         //<editor-fold desc="HOURLY WEATHER">
         PyObject hourly_data = (wttr_api.callAttr("hourly", api_key, place_key, metric)).callAttr("response");
-        PyObject hrs_temp, hrs_time;
+        PyObject hrs_temp, hrs_time, hrs_icon;
         wttr_hourly_temp.clear();
         wttr_hourly_time.clear();
 
         for(int i = 0; i < 12; i++){
             hrs_temp = wttr_api.callAttr("hrs_temp", hourly_data, i);
             hrs_time = wttr_api.callAttr("hrs_time", hourly_data, i);
+            hrs_icon = wttr_api.callAttr("hrs_icon", hourly_data, i);
             if(!metric)
                 wttr_hourly_temp.add(c_to_f(hrs_temp.toFloat()) + "°");
             else wttr_hourly_temp.add(hrs_temp.toString() + "°");
             wttr_hourly_time.add(hrs_time.toString());
+            wttr_hourly_icons.add(hrs_icon.toInt());
         }
         //</editor-fold>
 
         //<editor-fold desc="DAILY WEATHER">
         PyObject daily_data = (wttr_api.callAttr("daily", api_key, place_key, metric)).callAttr("response");
-        PyObject day_max, day_min, day_date;
+        PyObject day_max, day_min, day_date, day_icon;
         wttr_daily_time.clear();
         wttr_daily_temp.clear();
         for(int i = 0; i < 5; i++){
             day_max = wttr_api.callAttr("day_max", daily_data, i);
             day_min = wttr_api.callAttr("day_min", daily_data, i);
             day_date = wttr_api.callAttr("day_date", daily_data, i);
+            day_icon = wttr_api.callAttr("day_icon", daily_data, i);
             if(!metric)
                 wttr_daily_temp.add(c_to_f(day_max.toFloat()) + "°/" +
                                     c_to_f(day_min.toFloat()) + "°");
             else
                 wttr_daily_temp.add(day_max.toString() + "°/" + day_min.toString() + "°");
+            day_date.toString();
             wttr_daily_time.add(day_date.toString());
+            wttr_daily_icons.add(day_icon.toInt());
         }
         //</editor-fold>
 

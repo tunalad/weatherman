@@ -43,7 +43,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
-                            android:layout_marginTop="25sp"
+                            android:layout_marginTop="50sp"
                             android:paddingStart="31sp"
                             android:text="--°"
                             android:textSize="65sp"
@@ -128,7 +128,6 @@
                     android:layout_marginTop="5sp"
                     android:layout_marginBottom="5sp"
                     android:layout_below="@id/crd_hourly">
-
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -154,7 +153,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5sp"
                     android:layout_marginBottom="5sp"
-                    android:layout_below="@id/crd_daily">
+                    android:layout_below="@id/crd_daily"
+                    android:visibility="visible">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -279,23 +279,28 @@
                             android:layout_height="wrap_content"
                             android:padding="10sp"
                             android:text="Wind" />
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_below="@id/txt_wind"
+                            android:layout_marginTop="10sp"
+                            android:layout_marginBottom="10sp"
                             android:orientation="horizontal"
                             android:weightSum="2">
 
                             <RelativeLayout
-                                android:layout_width="wrap_content"
+                                android:layout_width="3dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1">
+
                                 <ImageView
                                     android:id="@+id/icon_wind"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
                                     android:layout_centerHorizontal="true"
-                                    tools:srcCompat="@tools:sample/avatars" />
+                                    android:scaleType="center"
+                                    app:srcCompat="@drawable/ic_navigation" />
                             </RelativeLayout>
 
                             <RelativeLayout
@@ -311,6 +316,7 @@
                                     android:padding="5sp"
                                     android:text="TextView"
                                     android:visibility="visible" />
+
                                 <TextView
                                     android:id="@+id/txt_speed"
                                     android:layout_width="wrap_content"

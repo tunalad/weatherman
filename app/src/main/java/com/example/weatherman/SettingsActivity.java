@@ -20,10 +20,6 @@ public class SettingsActivity extends PreferenceActivity {
     private void load_settings(){
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
     boolean is_metric = sp.getBoolean("sp_metric", true);
-    if (is_metric)
-        Toast.makeText(this, "Metric values enabled", Toast.LENGTH_SHORT).show();
-    else
-        Toast.makeText(this, "Metric values disabled", Toast.LENGTH_SHORT).show();
 
         SwitchPreference sp_metric = (SwitchPreference)findPreference("sp_metric");
         sp_metric.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
