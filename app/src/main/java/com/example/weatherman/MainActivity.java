@@ -31,10 +31,15 @@ import java.util.Calendar;
 // Todo (--) : Delete place items (on item held or in add menu)
 // Todo (ez) : Check if imputed place is valid (python)
 // Todo (ez) : Get place via GPS?
-// Todo (ez) : Make warning box work actually (python)
-// Todo (--) : Make settings do something (convert metric shit, default place on open)
 // Todo (ez) : Icons for gui ofc
+// Todo (ez) : Place management (order & default id)
 
+
+// Todo (DONE) : Make settings do something (convert metric shit, default place on open)
+// Todo (DONE) : Change add icon text & style
+// Todo (DONE) : Add city name textview
+
+// Todo (NOT POSSIBLE) : Make alert box work actually
 public class MainActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
 
@@ -64,13 +69,30 @@ public class MainActivity extends AppCompatActivity {
     TextView txt_visibility;
     TextView txt_wind_direction;
     TextView txt_wind_speed;
+    TextView txt_placename;
     //</editor-fold>
 
     DatabaseManager dbManager;
+    boolean metric;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //<editor-fold desc="txt IDs">
+        txt_updated = findViewById(R.id.txt_updated);
+        txt_current = findViewById(R.id.txt_temperature);
+        txt_maxmin = findViewById(R.id.txt_minmax);
+        txt_status = findViewById(R.id.txt_status);
+        txt_pressure = findViewById(R.id.txt_pressure);
+        txt_humidity = findViewById(R.id.txt_humidity);
+        txt_clouds = findViewById(R.id.txt_clouds);
+        txt_visibility = findViewById(R.id.txt_visibility);
+        txt_wind_direction = findViewById(R.id.txt_direction);
+        txt_wind_speed = findViewById(R.id.txt_speed);
+        txt_placename = findViewById(R.id.txt_placename);
+        //</editor-fold>
+
         load_settings();
 
         dbManager = new DatabaseManager(this);
@@ -79,7 +101,8 @@ public class MainActivity extends AppCompatActivity {
         catch (SQLDataException e) {e.printStackTrace();}
 
         nav_drawer();
-        //get_weather("Belgrade", true);
+        //get_weather("Belgrade", true); // TODO: SET DEFAULT PLACE VALUE
+
 
         //<editor-fold desc="HOURLY & DAILY CARDS">
         rcv_hourly = findViewById(R.id.rcv_hourly);
@@ -98,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                get_weather("Belgrade", true);
+                get_weather("Belgrade"); // TODO: SET DEFAULT PLACE VALUE
                 Toast.makeText(MainActivity.this, "Weather updated", Toast.LENGTH_SHORT).show();
                 // update weather on refresh
                 swipeRefreshLayout.setRefreshing(false);
@@ -107,25 +130,13 @@ public class MainActivity extends AppCompatActivity {
         //</editor-fold>
     }
     /* GET API DATA */
-    private void get_weather(String place_name, boolean metric){
-        //<editor-fold desc="txt IDs">
-        txt_updated = findViewById(R.id.txt_updated);
-        txt_current = findViewById(R.id.txt_temperature);
-        txt_maxmin = findViewById(R.id.txt_minmax);
-        txt_status = findViewById(R.id.txt_status);
-        txt_pressure = findViewById(R.id.txt_pressure);
-        txt_humidity = findViewById(R.id.txt_humidity);
-        txt_clouds = findViewById(R.id.txt_clouds);
-        txt_visibility = findViewById(R.id.txt_visibility);
-        txt_wind_direction = findViewById(R.id.txt_direction);
-        txt_wind_speed = findViewById(R.id.txt_speed);
-        //</editor-fold>
+    private void get_weather(String place_name){
 
+        txt_placename.setText(place_name);
 
         Python py = Python.getInstance();
         PyObject wttr_api = py.getModule("wttr_api");
         String api_key = wttr_api.get("API_KEY").toString();
-
 
         // GET PLACE KEY
         String place_key = dbManager.fetch_place_key(place_name);
@@ -140,6 +151,12 @@ public class MainActivity extends AppCompatActivity {
         txt_current.setText(crt_temp.toString() + "°");
         txt_maxmin.setText(crt_max.toString() + "/" + crt_min.toString());
         txt_status.setText(crt_text.toString());
+
+        if(!metric){
+            txt_current.setText(c_to_f(crt_temp.toFloat()) + "°");
+            txt_maxmin.setText(c_to_f(crt_max.toFloat()) + "/" +
+                    c_to_f(crt_min.toFloat()));
+        }
         //</editor-fold>
 
         //<editor-fold desc="HOURLY WEATHER">
@@ -151,7 +168,9 @@ public class MainActivity extends AppCompatActivity {
         for(int i = 0; i < 12; i++){
             hrs_temp = wttr_api.callAttr("hrs_temp", hourly_data, i);
             hrs_time = wttr_api.callAttr("hrs_time", hourly_data, i);
-            wttr_hourly_temp.add(hrs_temp.toString() + "°");
+            if(!metric)
+                wttr_hourly_temp.add(c_to_f(hrs_temp.toFloat()) + "°");
+            else wttr_hourly_temp.add(hrs_temp.toString() + "°");
             wttr_hourly_time.add(hrs_time.toString());
         }
         //</editor-fold>
@@ -165,7 +184,11 @@ public class MainActivity extends AppCompatActivity {
             day_max = wttr_api.callAttr("day_max", daily_data, i);
             day_min = wttr_api.callAttr("day_min", daily_data, i);
             day_date = wttr_api.callAttr("day_date", daily_data, i);
-            wttr_daily_temp.add(day_max.toString() + "°/" + day_min.toString() + "°");
+            if(!metric)
+                wttr_daily_temp.add(c_to_f(day_max.toFloat()) + "°/" +
+                                    c_to_f(day_min.toFloat()) + "°");
+            else
+                wttr_daily_temp.add(day_max.toString() + "°/" + day_min.toString() + "°");
             wttr_daily_time.add(day_date.toString());
         }
         //</editor-fold>
@@ -193,6 +216,10 @@ public class MainActivity extends AppCompatActivity {
         txt_updated.setText("Last updated at: " + time_hrs);
     }
 
+    String c_to_f(float value){
+        return String.format("%.1f", ((value * 1.8) + 32));
+    }
+
     /* NAVIGATION DRAWER MENU */
     private void nav_drawer(){
         navigationView = findViewById(R.id.navigationView);
@@ -210,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                 if (item.getItemId() == R.id.btn_open_add)
                     startActivity(new Intent(MainActivity.this, Add_place.class));
                 else{
-                    get_weather(dbManager.fetch_place_name(item.getItemId() - 70), true);
+                    get_weather(dbManager.fetch_place_name(item.getItemId() - 70));
                     drawerLayout.closeDrawers();
                     //Toast.makeText(MainActivity.this, "Item " + item.getItemId() + " moment?", Toast.LENGTH_SHORT).show();
                 }
@@ -231,10 +258,9 @@ public class MainActivity extends AppCompatActivity {
     private void load_settings(){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         boolean is_metric = sp.getBoolean("sp_metric", true);
-        if (is_metric)
-            Toast.makeText(this, "Metric values enabled", Toast.LENGTH_SHORT).show();
-        else
-            Toast.makeText(this, "Metric values disabled", Toast.LENGTH_SHORT).show();
+
+        if (is_metric) metric = true;
+        else metric = false;
     }
 
     /* MENU ITEMS */

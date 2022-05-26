@@ -46,5 +46,6 @@ public class Add_place extends AppCompatActivity {
                     Toast.makeText(Add_place.this, "Place already exists", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 }
