@@ -1,14 +1,17 @@
 import requests
 import json
 
-API_KEY = "iASbalAaVuTCerbDOvWWT6GgAplU8ECk"
+API_KEY = "nyudtyngXthuxunkPKkRsxBHlFmhWp9q"
 
 def get_key(api_key, place):
     ''' returns a key of the place '''
     place_data = requests.get(
             "https://dataservice.accuweather.com/locations/v1/cities/search?apikey="
             + api_key + "&q=" + place)
-    return place_data.json()[0]["Key"]
+    try:
+        return place_data.json()[0]["Key"]
+    except:
+        return "Place doesn't exist in accuweather database"
 
 class current:
     def __init__(self, api_key, place_key, metric):

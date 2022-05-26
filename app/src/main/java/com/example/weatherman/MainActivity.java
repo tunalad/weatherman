@@ -29,10 +29,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 // Todo (--) : Delete place items (on item held or in add menu)
-// Todo (ez) : Check if imputed place is valid (python)
 // Todo (ez) : Icons for weather
 // Todo (ez) : Place management (order & default id)
 // Todo (  ) : Make compass rotate depending on the dir given
+// Todo (ez) : Change daily weather time format
 
 public class MainActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         catch (SQLDataException e) {e.printStackTrace();}
 
         nav_drawer();
-        get_weather("Belgrade"); // TODO: SET DEFAULT PLACE VALUE
+        //get_weather("Belgrade"); // TODO: SET DEFAULT PLACE VALUE
 
 
         //<editor-fold desc="HOURLY & DAILY CARDS">

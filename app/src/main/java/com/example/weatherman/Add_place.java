@@ -3,6 +3,7 @@ package com.example.weatherman;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,14 +37,19 @@ public class Add_place extends AppCompatActivity {
                 if(dbManager.fetch_place_key(place_name) == "PLACE DOESN'T EXIST"){
                     Python py = Python.getInstance();
                     PyObject wttr_api = py.getModule("wttr_api");
-
-                    // GET PLACE KEY
                     PyObject place_key = wttr_api.callAttr("get_key", api_key, place_name);
-                    dbManager.insert(place_name, place_key.toString());
-                    Toast.makeText(Add_place.this, "Place added", Toast.LENGTH_SHORT).show();
+
+                    Log.d("onClick PLACE_KEY: ", place_key.toString());
+                    if(place_key.toString().length() != 6 ){
+                        Toast.makeText(Add_place.this, "Place doesn't exists", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        dbManager.insert(place_name, place_key.toString());
+                        Toast.makeText(Add_place.this, "Place added", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else
-                    Toast.makeText(Add_place.this, "Place already exists", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Add_place.this, "Place already added", Toast.LENGTH_SHORT).show();
             }
         });
 
