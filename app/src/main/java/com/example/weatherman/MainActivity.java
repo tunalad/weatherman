@@ -25,13 +25,15 @@ import com.chaquo.python.Python;
 import com.google.android.material.navigation.NavigationView;
 
 import java.sql.SQLDataException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 // Todo (--) : Delete place items (on item held or in add menu)
 // Todo (ez) : Place management (order & default id)
 // Todo (  ) : Make compass rotate depending on the dir given
-// Todo (ez) : Change daily weather time format
 
 public class MainActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
@@ -178,12 +180,22 @@ public class MainActivity extends AppCompatActivity {
             day_date = wttr_api.callAttr("day_date", daily_data, i);
             day_icon = wttr_api.callAttr("day_icon", daily_data, i);
             if(!metric)
-                wttr_daily_temp.add(c_to_f(day_max.toFloat()) + "°/" +
+                wttr_daily_temp.add(c_to_f(day_max.toFloat()) + "°\n" +
                                     c_to_f(day_min.toFloat()) + "°");
             else
-                wttr_daily_temp.add(day_max.toString() + "°/" + day_min.toString() + "°");
-            day_date.toString();
-            wttr_daily_time.add(day_date.toString());
+                wttr_daily_temp.add(" " + day_max.toString() + "°\n " + day_min.toString() + "°");
+
+            // From date to day
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                Date d = dateFormat.parse(day_date.toString());
+                String final_date = new SimpleDateFormat("EEE").format(d);
+                wttr_daily_time.add(final_date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            //wttr_daily_time.add(day_date.toString());
             wttr_daily_icons.add(day_icon.toInt());
         }
 
