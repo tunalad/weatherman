@@ -76,11 +76,13 @@ public class DatabaseManager {
     }
 
     public Cursor fetch(){
-        String[] columns = new String[] {DatabaseHelper.PLACE_ID, DatabaseHelper.PLACE_NAME, DatabaseHelper.PLACE_KEY};
-        Cursor crs = db.query(DatabaseHelper.DATABASE_NAME, columns,null, null, null, null, null);
+        Cursor crs;
+        String query = "select * from " + DatabaseHelper.TABLE_PLACE;
 
-        if (crs != null)
-            crs.moveToFirst();
+        crs = db.rawQuery(query, null);
+        crs.moveToFirst();
+
+
         return crs;
     }
 
@@ -91,7 +93,10 @@ public class DatabaseManager {
         return db.update(DatabaseHelper.TABLE_PLACE, cv, DatabaseHelper.PLACE_ID + "=" + id, null);
     }
 
-    public void delete(long id){
+    public void delete_by_id(long id){
         db.delete(DatabaseHelper.TABLE_PLACE, DatabaseHelper.PLACE_ID + "=" + id, null);
+    }
+    public void delete_by_name(String place_name){
+        db.delete(DatabaseHelper.TABLE_PLACE, DatabaseHelper.PLACE_NAME + "=" + place_name, null);
     }
 }

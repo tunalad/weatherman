@@ -1,8 +1,12 @@
 package com.example.weatherman;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +17,7 @@ import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
 
 import java.sql.SQLDataException;
+import java.util.ArrayList;
 
 public class Add_place extends AppCompatActivity {
 
@@ -27,8 +32,18 @@ public class Add_place extends AppCompatActivity {
         DatabaseManager dbManager = new DatabaseManager(this);
         Button btn_add_place = findViewById(R.id.btn_add_place);
         EditText et_placename = findViewById(R.id.et_placename);
+        RecyclerView rcv_places = findViewById(R.id.rcv_places);
+        ArrayList<String> places = new ArrayList<>();
 
         try {dbManager.open();} catch (SQLDataException e) {e.printStackTrace();}
+
+
+        for(int i = 1; i <= dbManager.count_place(); i++)
+            places.add(dbManager.fetch_place_name(i));
+
+        PlaceItem placeItem = new PlaceItem(this, places);
+        rcv_places.setAdapter(placeItem);
+        rcv_places.setLayoutManager(new LinearLayoutManager(this));
 
         btn_add_place.setOnClickListener(new View.OnClickListener() {
             @Override

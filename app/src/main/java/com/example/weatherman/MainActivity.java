@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
     DatabaseManager dbManager;
     boolean metric;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
         catch (SQLDataException e) {e.printStackTrace();}
 
         nav_drawer();
-        //get_weather("Belgrade"); // TODO: SET DEFAULT PLACE VALUE
 
 
 
@@ -278,7 +278,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_items, menu);
-        //getMenuInflater().inflate(R.menu.menu_nav_drawer, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

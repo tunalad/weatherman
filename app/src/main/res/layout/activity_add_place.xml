@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Add_place"
-    android:layout_margin="25sp">
+    android:layout_margin="15sp">
 
     <EditText
         android:id="@+id/et_placename"
@@ -24,4 +24,12 @@
         android:layout_below="@id/et_placename"
         android:layout_centerHorizontal="true"
         android:text="Add place" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcv_places"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btn_add_place"
+        android:padding="5sp"
+        />
 </RelativeLayout>
