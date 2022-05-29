@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
+import com.github.pwittchen.weathericonview.WeatherIconView;
 import com.google.android.material.navigation.NavigationView;
 
 import java.sql.SQLDataException;
@@ -31,8 +32,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-
-// Todo (  ) : Make compass rotate depending on the dir given
 
 public class MainActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
@@ -56,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Integer> wttr_daily_icons = new ArrayList<>();
     //</editor-fold>
 
-    //<editor-fold desc="TEXTVIEW DECLARATIONS">
+    //<editor-fold desc="WEATHER THINGS DECLARATIONS">
     TextView txt_updated ;
     TextView txt_current;
     TextView txt_maxmin;
@@ -68,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     TextView txt_wind_direction;
     TextView txt_wind_speed;
     TextView txt_placename;
+    WeatherIconView icon_wind;
     //</editor-fold>
 
     DatabaseManager dbManager;
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //<editor-fold desc="txt IDs">
+        //<editor-fold desc="IDs">
         txt_updated = findViewById(R.id.txt_updated);
         txt_current = findViewById(R.id.txt_temperature);
         txt_maxmin = findViewById(R.id.txt_minmax);
@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         txt_wind_direction = findViewById(R.id.txt_direction);
         txt_wind_speed = findViewById(R.id.txt_speed);
         txt_placename = findViewById(R.id.txt_placename);
+        icon_wind = findViewById(R.id.icon_wind);
         //</editor-fold>
 
         rcv_daily= findViewById(R.id.rcv_daily);
@@ -217,15 +218,16 @@ public class MainActivity extends AppCompatActivity {
         PyObject det_clouds = wttr_api.callAttr("det_clouds", current_data);
         PyObject det_visibility = wttr_api.callAttr("det_visibility", current_data);
 
-        txt_pressure.setText(det_pressure.toString()+"mb");
-        txt_humidity.setText(det_humidity.toString()+"%");
-        txt_clouds.setText(det_clouds.toString()+"%");
-        txt_visibility.setText(det_visibility+"km");
+        txt_pressure.setText("Pressure: \t" + det_pressure.toString()+"mb");
+        txt_humidity.setText("Humidity: \t" + det_humidity.toString()+"%");
+        txt_clouds.setText("Clouds: \t" + det_clouds.toString()+"%");
+        txt_visibility.setText("Visibility: \t" + det_visibility+"km");
 
         PyObject wind_speed= wttr_api.callAttr("wind_speed", current_data);
         PyObject wind_dir = wttr_api.callAttr("wind_dir", current_data);
         txt_wind_direction.setText(wind_dir.toString());
         txt_wind_speed.setText(wind_speed.toString());
+        //icon_wind.setIconResource(getString(R.string.)); // Todo: make compass icon spin
         //</editor-fold>
 
         // UPDATE TIME
@@ -301,7 +303,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(main_place == "noplaceselected")
             Toast.makeText(this, "No place selected", Toast.LENGTH_SHORT).show();
-        //else get_weather(main_place);
+        else get_weather(main_place);
 
         nav_drawer();
     }

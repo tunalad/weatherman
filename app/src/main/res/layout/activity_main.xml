@@ -10,10 +10,12 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/swipeRefreshLayout">
+        android:id="@+id/swipeRefreshLayout"
+        android:background="#F6F6F6">
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -172,6 +174,7 @@
                             android:padding="10sp"
                             android:text="Details" />
 
+                        <!-- PRESSURE -->
                         <LinearLayout
                             android:id="@+id/ll_pressure"
                             android:layout_width="match_parent"
@@ -179,89 +182,102 @@
                             android:layout_below="@id/txt_details"
                             android:layout_centerInParent="true"
                             android:gravity="center"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:foregroundGravity="center"
+                            android:weightSum="4">
 
-                            <ImageView
-                                android:id="@+id/icon_pressure"
+                            <com.github.pwittchen.weathericonview.WeatherIconView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                app:weatherIconResource="@string/wi_barometer"
+                                app:weatherIconColor="@color/purple_700"
+                                app:weatherIconSize="35"
                                 android:layout_weight="1"
-                                tools:srcCompat="@tools:sample/avatars" />
+                                />
 
                             <TextView
                                 android:id="@+id/txt_pressure"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:layout_weight="2"
                                 android:text="TextView" />
                         </LinearLayout>
 
+                        <!-- HUMIDITY -->
                         <LinearLayout
                             android:id="@+id/cl_humidity"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_below="@id/ll_pressure"
                             android:gravity="center"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:weightSum="4">
 
-                            <ImageView
-                                android:id="@+id/icon_humidity"
+                            <com.github.pwittchen.weathericonview.WeatherIconView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                tools:srcCompat="@tools:sample/avatars" />
+                                app:weatherIconResource="@string/wi_humidity"
+                                app:weatherIconSize="35"
+                                app:weatherIconColor="@color/purple_700"
+                                android:layout_weight="1"/>
 
                             <TextView
                                 android:id="@+id/txt_humidity"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="TextView" />
+                                android:layout_weight="2"
+                                android:text="TextView"/>
+
                         </LinearLayout>
 
+                        <!-- CLOUDS  -->
                         <LinearLayout
                             android:id="@+id/ll_clouds"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_below="@id/cl_humidity"
                             android:gravity="center"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:weightSum="4">
 
-                            <ImageView
-                                android:id="@+id/icon_clouds"
+                            <com.github.pwittchen.weathericonview.WeatherIconView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                app:weatherIconColor="@color/purple_700"
+                                app:weatherIconSize="35"
                                 android:layout_weight="1"
-                                tools:srcCompat="@tools:sample/avatars" />
-
+                                app:weatherIconResource="@string/wi_cloud"/>
                             <TextView
                                 android:id="@+id/txt_clouds"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:layout_weight="2"
                                 android:text="TextView" />
                         </LinearLayout>
 
+                        <!-- VISIBILITY -->
                         <LinearLayout
                             android:id="@+id/ll_visibility"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_below="@id/ll_clouds"
                             android:gravity="center"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:weightSum="4">
 
-                            <ImageView
-                                android:id="@+id/icon_visibility"
+                            <com.github.pwittchen.weathericonview.WeatherIconView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                app:weatherIconColor="@color/purple_700"
                                 android:layout_weight="1"
-                                tools:srcCompat="@tools:sample/avatars" />
+                                app:weatherIconSize="35"
+                                app:weatherIconResource="@string/wi_fog"/>
 
                             <TextView
                                 android:id="@+id/txt_visibility"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:layout_weight="2"
                                 android:text="TextView" />
                         </LinearLayout>
                     </RelativeLayout>
@@ -298,14 +314,22 @@
                                 android:layout_width="3dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1">
-
-                                <ImageView
+                                <com.github.pwittchen.weathericonview.WeatherIconView
                                     android:id="@+id/icon_wind"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    app:weatherIconResource="@string/wi_wind_direction"
+                                    app:weatherIconSize="75"
+                                    app:weatherIconColor="@color/purple_700"
+                                    android:layout_centerInParent="true"/>
+                                <ImageView
+                                    android:id="@+id/icon_wind_old"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_centerHorizontal="true"
                                     android:scaleType="center"
-                                    app:srcCompat="@drawable/ic_navigation" />
+                                    app:srcCompat="@drawable/ic_navigation"
+                                    android:visibility="gone"/>
                             </RelativeLayout>
 
                             <RelativeLayout
