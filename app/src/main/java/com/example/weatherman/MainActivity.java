@@ -15,8 +15,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,12 +30,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 // Todo (--) : Delete place items (on item held or in add menu)
-// Todo (ez) : Place management (order & default id)
 // Todo (  ) : Make compass rotate depending on the dir given
 
 public class MainActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
 
+    //<editor-fold desc="UI ELEMENTS DECLARATION">
     ActionBarDrawerToggle drawerToggle;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -45,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     RecyclerView rcv_hourly;
     RecyclerView rcv_daily;
+    //</editor-fold>
 
     //<editor-fold desc="WEATHER DATA ARRAYS">
     ArrayList<String> wttr_hourly_temp = new ArrayList<>();
@@ -70,7 +69,12 @@ public class MainActivity extends AppCompatActivity {
     //</editor-fold>
 
     DatabaseManager dbManager;
+
+    SharedPreferences sp;
+    SharedPreferences.Editor esp;
+
     boolean metric;
+    String main_place;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,25 +97,23 @@ public class MainActivity extends AppCompatActivity {
 
         rcv_daily= findViewById(R.id.rcv_daily);
         rcv_hourly = findViewById(R.id.rcv_hourly);
-        load_settings();
 
         dbManager = new DatabaseManager(this);
 
         try {dbManager.open();}
         catch (SQLDataException e) {e.printStackTrace();}
 
+        load_settings();
+
         nav_drawer();
-
-
 
         //<editor-fold desc="SWIPE REFRESH">
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                get_weather("Belgrade"); // TODO: SET DEFAULT PLACE VALUE
+                load_settings();
                 Toast.makeText(MainActivity.this, "Weather updated", Toast.LENGTH_SHORT).show();
-                // update weather on refresh
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -127,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
         String api_key = wttr_api.get("API_KEY").toString();
 
         // GET PLACE KEY
+        Log.d("get_weather:", "'" + place_name + "'");
         String place_key = dbManager.fetch_place_key(place_name);
 
         //<editor-fold desc="CURRENT WEATHER">
@@ -224,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         // UPDATE TIME
         Calendar time = Calendar.getInstance();
         String time_hrs = time.get(Calendar.HOUR_OF_DAY) + ":" + time.get(Calendar.MINUTE);
-        txt_updated.setText("Last updated at: " + time_hrs);
+        txt_updated.setText("Updated at: " + time_hrs);
     }
 
     String c_to_f(float value){
@@ -245,9 +248,16 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                esp = sp.edit();
+
+                main_place = sp.getString(getString(R.string.main_place), "noplaceselected");
+
                 if (item.getItemId() == R.id.btn_open_add)
                     startActivity(new Intent(MainActivity.this, Add_place.class));
                 else{
+                    esp.putString(getString(R.string.main_place), dbManager.fetch_place_name(item.getItemId() - 70));
+                    esp.commit();
                     get_weather(dbManager.fetch_place_name(item.getItemId() - 70));
                     drawerLayout.closeDrawers();
                     //Toast.makeText(MainActivity.this, "Item " + item.getItemId() + " moment?", Toast.LENGTH_SHORT).show();
@@ -255,23 +265,27 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-        navigationView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                Toast.makeText(MainActivity.this, "Held? " + view.toString(), Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
     }
 
     /* LOAD SETTINGS */
     private void load_settings(){
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean is_metric = sp.getBoolean("sp_metric", true);
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
+        esp = sp.edit();
 
-        if (is_metric) metric = true;
-        else metric = false;
+        boolean is_metric = sp.getBoolean("sp_metric", true);
+        main_place = sp.getString(getString(R.string.main_place), "noplaceselected");
+
+        metric = is_metric;
+
+        if(main_place == "noplaceselected")
+            Toast.makeText(this, "No place selected", Toast.LENGTH_SHORT).show();
+        else get_weather(main_place);
+    }
+
+    @Override
+    protected void onResume() {
+        load_settings();
+        super.onResume();
     }
 
     /* MENU ITEMS */
@@ -291,9 +305,4 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onResume() {
-        load_settings();
-        super.onResume();
-    }
 }

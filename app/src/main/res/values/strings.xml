@@ -3,6 +3,8 @@
     <string name="close">Close</string>
     <string name="open">Open</string>
 
+    <string name="main_place">com.example.weatherman.main_place</string>
+
     <string-array name="wttr_hourly_temp">
         <item>11°</item>
         <item>12°</item>
@@ -17,7 +19,6 @@
         <item>21°</item>
         <item>22°</item>
     </string-array>
-
     <string-array name="wttr_hourly_time">
         <item>16:11</item>
         <item>16:12</item>

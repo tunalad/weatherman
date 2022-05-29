@@ -1,7 +1,7 @@
 import requests
 import json
 
-API_KEY = "KVzAF4HG7lIy8MrJoDWUO8WGhWGgUAkw"
+API_KEY = "J9CjhacbtIPAU7E4SlahZGOMkuBbbzjM"
 
 def get_key(api_key, place):
     ''' returns a key of the place '''

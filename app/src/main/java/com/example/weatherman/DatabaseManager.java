@@ -41,6 +41,7 @@ public class DatabaseManager {
 
     @SuppressLint("Range")
     public String fetch_place_key(String place_name){
+        Log.d("fetch_place_key: ", place_name);
         Cursor crs;
         String query = "select " + DatabaseHelper.PLACE_KEY + " from " + DatabaseHelper.TABLE_PLACE  +
                 " where " + DatabaseHelper.PLACE_NAME + " is '" + place_name + "' collate nocase";
@@ -51,6 +52,7 @@ public class DatabaseManager {
         if (crs.getCount() <= 0)
             return "PLACE DOESN'T EXIST";
         else
+            Log.d("fetch_place_key: ", crs.getString(crs.getColumnIndex(DatabaseHelper.PLACE_KEY)));
             return crs.getString(crs.getColumnIndex(DatabaseHelper.PLACE_KEY));
     }
 
@@ -59,6 +61,18 @@ public class DatabaseManager {
         Cursor crs;
         String query = "select " + DatabaseHelper.PLACE_NAME + " from " +
                 DatabaseHelper.TABLE_PLACE + " where " + DatabaseHelper.PLACE_ID + " is " + place_id;
+
+        crs = db.rawQuery(query, null);
+        crs.moveToFirst();
+
+        return crs.getString(crs.getColumnIndex(DatabaseHelper.PLACE_NAME));
+    }
+
+    @SuppressLint("Range")
+    public String fetch_place_name(String place_key){
+        Cursor crs;
+        String query = "select " + DatabaseHelper.PLACE_NAME + " from " +
+                DatabaseHelper.TABLE_PLACE + " where " + DatabaseHelper.PLACE_KEY + " is " + place_key;
 
         crs = db.rawQuery(query, null);
         crs.moveToFirst();
@@ -93,10 +107,14 @@ public class DatabaseManager {
         return db.update(DatabaseHelper.TABLE_PLACE, cv, DatabaseHelper.PLACE_ID + "=" + id, null);
     }
 
-    public void delete_by_id(long id){
+    public void delete(long id){
         db.delete(DatabaseHelper.TABLE_PLACE, DatabaseHelper.PLACE_ID + "=" + id, null);
     }
-    public void delete_by_name(String place_name){
-        db.delete(DatabaseHelper.TABLE_PLACE, DatabaseHelper.PLACE_NAME + "=" + place_name, null);
+
+    public void delete(String place_name_or_key){
+        if(place_name_or_key.length() == 6)
+            db.delete(DatabaseHelper.TABLE_PLACE, DatabaseHelper.PLACE_KEY + "=" + place_name_or_key, null);
+        else
+            db.delete(DatabaseHelper.TABLE_PLACE, DatabaseHelper.PLACE_NAME + "=" + place_name_or_key, null);
     }
 }
