@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -26,10 +28,10 @@ import java.sql.SQLDataException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
-// Todo (--) : Delete place items (on item held or in add menu)
 // Todo (  ) : Make compass rotate depending on the dir given
 
 public class MainActivity extends AppCompatActivity {
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
     boolean metric;
     String main_place;
+    ArrayList<Integer> places_list_ids;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,9 +106,10 @@ public class MainActivity extends AppCompatActivity {
         try {dbManager.open();}
         catch (SQLDataException e) {e.printStackTrace();}
 
+        dbManager.fetch();
+
         load_settings();
 
-        nav_drawer();
 
         //<editor-fold desc="SWIPE REFRESH">
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
@@ -235,15 +239,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /* NAVIGATION DRAWER MENU */
+    @SuppressLint("LongLogTag")
     private void nav_drawer(){
         navigationView = findViewById(R.id.navigationView);
         drawerLayout = findViewById(R.id.drawerLayout);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
 
+        places_list_ids = new ArrayList<>();
         menu_drawer = navigationView.getMenu();
-        for(int i = 1; i <= dbManager.count_place(); i++)
-            menu_drawer.add(0, 70 + i, 0, dbManager.fetch_place_name(i));
-        //menu.add(0, itemId, 0, title);
+
+        /////////////////////////////////////////////////
+
+        places_list_ids.removeAll(places_list_ids);
+
+        Cursor crs = dbManager.fetch();
+        crs.moveToFirst();
+
+        for(int i= 1; i<= crs.getCount(); i++){
+            places_list_ids.add(crs.getInt(0));
+            crs.moveToNext();
+        }
+
+        for(int i= 0; i < places_list_ids.size(); i++){
+            if(menu_drawer.findItem(i+70) == null)
+                menu_drawer.add(0, i + 70, 0, dbManager.fetch_place_name(places_list_ids.get(i)));
+            else
+                Log.d("MENU_DRAWER ITEM ID: " + i+70 , menu_drawer.findItem(i+70).toString());
+        }
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -256,11 +278,11 @@ public class MainActivity extends AppCompatActivity {
                 if (item.getItemId() == R.id.btn_open_add)
                     startActivity(new Intent(MainActivity.this, Add_place.class));
                 else{
-                    esp.putString(getString(R.string.main_place), dbManager.fetch_place_name(item.getItemId() - 70));
+                    // key changed for 2 because of the above for loops I assume?? Todo: do menu keys properly
+                    esp.putString(getString(R.string.main_place), dbManager.fetch_place_name( (item.getItemId() - 68) ));
                     esp.commit();
-                    get_weather(dbManager.fetch_place_name(item.getItemId() - 70));
+                    get_weather(dbManager.fetch_place_name(item.getItemId() - 68));
                     drawerLayout.closeDrawers();
-                    //Toast.makeText(MainActivity.this, "Item " + item.getItemId() + " moment?", Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }
@@ -279,7 +301,9 @@ public class MainActivity extends AppCompatActivity {
 
         if(main_place == "noplaceselected")
             Toast.makeText(this, "No place selected", Toast.LENGTH_SHORT).show();
-        else get_weather(main_place);
+        //else get_weather(main_place);
+
+        nav_drawer();
     }
 
     @Override

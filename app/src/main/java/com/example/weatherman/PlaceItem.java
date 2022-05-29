@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.sql.SQLDataException;
 import java.util.ArrayList;
 
 public class PlaceItem extends RecyclerView.Adapter<PlaceItem.PlaceItemHolder> {
@@ -29,10 +32,10 @@ public class PlaceItem extends RecyclerView.Adapter<PlaceItem.PlaceItemHolder> {
     @NonNull
     @Override
     public PlaceItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-
         LayoutInflater inflater = LayoutInflater.from(c);
         View view = inflater.inflate(R.layout.rcv_place_item, parent, false);
+
+
         return new PlaceItemHolder(view);
     }
 
@@ -44,7 +47,11 @@ public class PlaceItem extends RecyclerView.Adapter<PlaceItem.PlaceItemHolder> {
         holder.btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(c, "Deleted that b", Toast.LENGTH_SHORT).show();
+                dbManager = new DatabaseManager(c);
+                try {dbManager.open();} catch (SQLDataException e) {e.printStackTrace();}
+                Log.d("onClick delete: ", place_name.get(position));
+                dbManager.delete(place_name.get(position));
+                Toast.makeText(c, place_name.get(position) + " deleted", Toast.LENGTH_SHORT).show();
             }
         });
         /*holder.btn_favourite.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +72,7 @@ public class PlaceItem extends RecyclerView.Adapter<PlaceItem.PlaceItemHolder> {
     public class PlaceItemHolder extends RecyclerView.ViewHolder{
         //SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
         //SharedPreferences.Editor esp = sp.edit();
+
 
         TextView txt_place_name, txt_place_index;
         ImageView btn_delete, btn_favourite;

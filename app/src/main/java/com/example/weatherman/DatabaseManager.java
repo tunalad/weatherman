@@ -96,7 +96,7 @@ public class DatabaseManager {
         crs = db.rawQuery(query, null);
         crs.moveToFirst();
 
-
+        Log.d("fetch: ", crs.toString());
         return crs;
     }
 
@@ -115,6 +115,6 @@ public class DatabaseManager {
         if(place_name_or_key.length() == 6)
             db.delete(DatabaseHelper.TABLE_PLACE, DatabaseHelper.PLACE_KEY + "=" + place_name_or_key, null);
         else
-            db.delete(DatabaseHelper.TABLE_PLACE, DatabaseHelper.PLACE_NAME + "=" + place_name_or_key, null);
+            db.delete(DatabaseHelper.TABLE_PLACE, DatabaseHelper.PLACE_NAME + "='" + place_name_or_key + "'", null);
     }
 }

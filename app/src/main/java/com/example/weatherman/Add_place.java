@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -20,6 +21,11 @@ import java.util.ArrayList;
 
 public class Add_place extends AppCompatActivity {
 
+    DatabaseManager dbManager;
+    Button btn_add_place;
+    EditText et_placename;
+    RecyclerView rcv_places;
+    ArrayList<String> places;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,13 +33,11 @@ public class Add_place extends AppCompatActivity {
         setContentView(R.layout.activity_add_place);
 
         //<editor-fold>
-        String api_key = Python.getInstance().getModule("wttr_api").get("API_KEY").toString();
-
-        DatabaseManager dbManager = new DatabaseManager(this);
-        Button btn_add_place = findViewById(R.id.btn_add_place);
-        EditText et_placename = findViewById(R.id.et_placename);
-        RecyclerView rcv_places = findViewById(R.id.rcv_places);
-        ArrayList<String> places = new ArrayList<>();
+        dbManager = new DatabaseManager(this);
+        btn_add_place = findViewById(R.id.btn_add_place);
+        et_placename = findViewById(R.id.et_placename);
+        rcv_places = findViewById(R.id.rcv_places);
+        places = new ArrayList<>();
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor esp = sp.edit();
@@ -41,11 +45,9 @@ public class Add_place extends AppCompatActivity {
 
         try {dbManager.open();} catch (SQLDataException e) {e.printStackTrace();}
 
-        for(int i = 1; i <= dbManager.count_place(); i++) places.add(dbManager.fetch_place_name(i));
+        String api_key = Python.getInstance().getModule("wttr_api").get("API_KEY").toString();
 
-        PlaceItem placeItem = new PlaceItem(this, places);
-        rcv_places.setAdapter(placeItem);
-        rcv_places.setLayoutManager(new LinearLayoutManager(this));
+        update_rcv_list();
 
         btn_add_place.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,13 +66,30 @@ public class Add_place extends AppCompatActivity {
                         esp.putString(getString(R.string.main_place), dbManager.fetch_place_name(place_key.toString()));
                         esp.commit();
 
-                        Add_place.super.onBackPressed();
+                        //Add_place.super.onBackPressed();
                         Toast.makeText(Add_place.this, "Place added", Toast.LENGTH_SHORT).show();
                     }
                 }
                 else Toast.makeText(Add_place.this, "Place already added", Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
+    protected void update_rcv_list(){
+        ArrayList<Integer> places_list_ids = new ArrayList<>();
+
+        Cursor crs = dbManager.fetch();
+        crs.moveToFirst();
+        for(int i = 1; i<= crs.getCount(); i++){
+            places_list_ids.add(crs.getInt(0));
+            crs.moveToNext();
+        }
+
+        for(int i=0; i < places_list_ids.size(); i++)
+            places.add(dbManager.fetch_place_name(places_list_ids.get(i)));
+
+        PlaceItem placeItem = new PlaceItem(this, places);
+        rcv_places.setAdapter(placeItem);
+        rcv_places.setLayoutManager(new LinearLayoutManager(this));
     }
 }
