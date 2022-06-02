@@ -71,6 +71,8 @@ public class Add_place extends AppCompatActivity {
 
                         //Add_place.super.onBackPressed();
                         Toast.makeText(Add_place.this, "Place added", Toast.LENGTH_SHORT).show();
+                        et_placename.getText().clear();
+                        update_rcv_list();
                     }
                 }
                 else Toast.makeText(Add_place.this, "Place already added", Toast.LENGTH_SHORT).show();
@@ -80,6 +82,7 @@ public class Add_place extends AppCompatActivity {
 
     protected void update_rcv_list(){
         ArrayList<Integer> places_list_ids = new ArrayList<>();
+        places.clear();
 
         Cursor crs = dbManager.fetch();
         crs.moveToFirst();
@@ -87,6 +90,7 @@ public class Add_place extends AppCompatActivity {
             places_list_ids.add(crs.getInt(0));
             crs.moveToNext();
         }
+
 
         for(int i=0; i < places_list_ids.size(); i++)
             places.add(dbManager.fetch_place_name(places_list_ids.get(i)));

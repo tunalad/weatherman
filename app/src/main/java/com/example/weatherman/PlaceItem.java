@@ -35,7 +35,6 @@ public class PlaceItem extends RecyclerView.Adapter<PlaceItem.PlaceItemHolder> {
         LayoutInflater inflater = LayoutInflater.from(c);
         View view = inflater.inflate(R.layout.rcv_place_item, parent, false);
 
-
         return new PlaceItemHolder(view);
     }
 
@@ -52,6 +51,7 @@ public class PlaceItem extends RecyclerView.Adapter<PlaceItem.PlaceItemHolder> {
                 Log.d("onClick delete: ", place_name.get(position));
                 dbManager.delete(place_name.get(position));
                 Toast.makeText(c, place_name.get(position) + " deleted", Toast.LENGTH_SHORT).show();
+                ((Add_place)c).update_rcv_list();
             }
         });
         /*holder.btn_favourite.setOnClickListener(new View.OnClickListener() {
