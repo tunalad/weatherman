@@ -1,13 +1,11 @@
 import requests
 import json
 
-API_KEY = "lwIH1lABAdmYKwHZNTDVNVG9uwxtHGHJ"
+API_KEY = "lTRygYraFXwpPCKxEjjIdwRO0iyvSVNz"
 
 def get_key(api_key, place):
     ''' returns a key of the place '''
-    place_data = requests.get(
-            "https://dataservice.accuweather.com/locations/v1/cities/search?apikey="
-            + api_key + "&q=" + place)
+    place_data = requests.get("https://dataservice.accuweather.com/locations/v1/cities/search?apikey=" + api_key + "&q=" + place)
     try:
         return place_data.json()[0]["Key"]
     except:

@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
     boolean metric;
     String main_place;
-    ArrayList<Integer> places_list_ids;
+    ArrayList<String> places_list_names;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,24 +247,24 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
 
-        places_list_ids = new ArrayList<>();
+        places_list_names= new ArrayList<>();
         menu_drawer = navigationView.getMenu();
 
         /////////////////////////////////////////////////
 
-        places_list_ids.removeAll(places_list_ids);
+        places_list_names.removeAll(places_list_names);
 
         Cursor crs = dbManager.fetch();
         crs.moveToFirst();
 
         for(int i= 1; i<= crs.getCount(); i++){
-            places_list_ids.add(crs.getInt(0));
+            places_list_names.add(crs.getString(1));
             crs.moveToNext();
         }
 
-        for(int i= 0; i < places_list_ids.size(); i++){
+        for(int i= 0; i < places_list_names.size(); i++){
             if(menu_drawer.findItem(i+70) == null)
-                menu_drawer.add(0, i + 70, 0, dbManager.fetch_place_name(places_list_ids.get(i)));
+                menu_drawer.add(0, i + 70, 0, dbManager.fetch_place_name(dbManager.fetch_place_key(places_list_names.get(i))));
             else
                 Log.d("MENU_DRAWER ITEM ID: " + i+70 , menu_drawer.findItem(i+70).toString());
         }

@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -58,13 +59,15 @@ public class Add_place extends AppCompatActivity {
                     PyObject wttr_api = py.getModule("wttr_api");
                     PyObject place_key = wttr_api.callAttr("get_key", api_key, place_name);
 
+                    Log.d("onClick: ", place_key.toString());
+
                     if(place_key.toString().length() != 6 )
                         Toast.makeText(Add_place.this, "Place doesn't exists", Toast.LENGTH_SHORT).show();
                     else {
                         dbManager.insert(place_name, place_key.toString());
 
-                        esp.putString(getString(R.string.main_place), dbManager.fetch_place_name(place_key.toString()));
-                        esp.commit();
+                        //esp.putString(getString(R.string.main_place), dbManager.fetch_place_name(place_key.toString()));
+                        //esp.commit();
 
                         //Add_place.super.onBackPressed();
                         Toast.makeText(Add_place.this, "Place added", Toast.LENGTH_SHORT).show();

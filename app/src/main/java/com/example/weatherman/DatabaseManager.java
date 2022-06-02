@@ -59,7 +59,7 @@ public class DatabaseManager {
     @SuppressLint("Range")
     public String fetch_place_name(int place_id){
         Cursor crs;
-        String query = "select '" + DatabaseHelper.PLACE_NAME + "' from " +
+        String query = "select " + DatabaseHelper.PLACE_NAME + " from " +
                 DatabaseHelper.TABLE_PLACE + " where " + DatabaseHelper.PLACE_ID + " is " + place_id;
 
         crs = db.rawQuery(query, null);
@@ -74,7 +74,7 @@ public class DatabaseManager {
     @SuppressLint("Range")
     public String fetch_place_name(String place_key){
         Cursor crs;
-        String query = "select '" + DatabaseHelper.PLACE_NAME + "' from " +
+        String query = "select " + DatabaseHelper.PLACE_NAME + " from " +
                 DatabaseHelper.TABLE_PLACE + " where " + DatabaseHelper.PLACE_KEY + " is " + place_key;
 
         crs = db.rawQuery(query, null);
