@@ -59,25 +59,31 @@ public class DatabaseManager {
     @SuppressLint("Range")
     public String fetch_place_name(int place_id){
         Cursor crs;
-        String query = "select " + DatabaseHelper.PLACE_NAME + " from " +
+        String query = "select '" + DatabaseHelper.PLACE_NAME + "' from " +
                 DatabaseHelper.TABLE_PLACE + " where " + DatabaseHelper.PLACE_ID + " is " + place_id;
 
         crs = db.rawQuery(query, null);
         crs.moveToFirst();
 
-        return crs.getString(crs.getColumnIndex(DatabaseHelper.PLACE_NAME));
+        if (crs.getCount() <= 0)
+            return "PLACE DOESN'T EXIST";
+        else
+            return crs.getString(crs.getColumnIndex(DatabaseHelper.PLACE_NAME));
     }
 
     @SuppressLint("Range")
     public String fetch_place_name(String place_key){
         Cursor crs;
-        String query = "select " + DatabaseHelper.PLACE_NAME + " from " +
+        String query = "select '" + DatabaseHelper.PLACE_NAME + "' from " +
                 DatabaseHelper.TABLE_PLACE + " where " + DatabaseHelper.PLACE_KEY + " is " + place_key;
 
         crs = db.rawQuery(query, null);
         crs.moveToFirst();
 
-        return crs.getString(crs.getColumnIndex(DatabaseHelper.PLACE_NAME));
+        if (crs.getCount() <= 0)
+            return "PLACE DOESN'T EXIST";
+        else
+            return crs.getString(crs.getColumnIndex(DatabaseHelper.PLACE_NAME));
     }
 
     @SuppressLint("Range")

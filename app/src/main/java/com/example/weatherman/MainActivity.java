@@ -301,9 +301,17 @@ public class MainActivity extends AppCompatActivity {
 
         metric = is_metric;
 
-        if(main_place == "noplaceselected")
+        if (dbManager.fetch_place_key(main_place) == "PLACE DOESN'T EXIST"){
+            esp.putString(getString(R.string.main_place), "noplaceselected");
+            esp.commit();
+            main_place = "noplaceselected";
+            Log.d("load_settings: ", getString(R.string.main_place));
+        }
+
+        if(main_place == "" || main_place == "noplaceselected")
             Toast.makeText(this, "No place selected", Toast.LENGTH_SHORT).show();
-        else get_weather(main_place);
+        else
+            get_weather(main_place);
 
         nav_drawer();
     }
