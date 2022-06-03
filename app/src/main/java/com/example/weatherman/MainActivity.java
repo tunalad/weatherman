@@ -281,9 +281,9 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(MainActivity.this, Add_place.class));
                 else{
                     // key changed for 2 because of the above for loops I assume?? Todo: do menu keys properly
-                    esp.putString(getString(R.string.main_place), dbManager.fetch_place_name( (item.getItemId() - 68) ));
+                    esp.putString(getString(R.string.main_place), (item.getTitle().toString()));
                     esp.commit();
-                    get_weather(dbManager.fetch_place_name(item.getItemId() - 68));
+                    get_weather((String) item.getTitle());
                     drawerLayout.closeDrawers();
                 }
                 return false;

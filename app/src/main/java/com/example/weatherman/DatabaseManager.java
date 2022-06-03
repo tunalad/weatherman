@@ -87,6 +87,20 @@ public class DatabaseManager {
     }
 
     @SuppressLint("Range")
+    public String fetch_place_id(String place_name){
+        Cursor crs;
+        String query = "select " + DatabaseHelper.PLACE_ID + " from " +
+                DatabaseHelper.TABLE_PLACE + " where " + DatabaseHelper.PLACE_NAME + " is " + place_name;
+
+        crs = db.rawQuery(query, null);
+        crs.moveToFirst();
+
+        if (crs.getCount() <= 0)
+            return "PLACE DOESN'T EXIST";
+        else
+            return crs.getString(crs.getColumnIndex(DatabaseHelper.PLACE_ID));
+    }
+    @SuppressLint("Range")
     public int count_place(){
         Cursor crs;
         String query = "select count(*) from " + DatabaseHelper.TABLE_PLACE;
